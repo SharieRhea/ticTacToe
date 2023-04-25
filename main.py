@@ -1,17 +1,18 @@
 import pygame
 import spritesheet
 import button
+import board
 
 pygame.init()
 
 screen = pygame.display.set_mode((500, 500))
 BG = (50, 50, 50)
 
-board = pygame.image.load("sprites/board.png").convert_alpha()
-board.set_colorkey((0, 0, 0))
-board = pygame.transform.scale(board, (192, 192))
-
 play_button = button.Button(spritesheet.SpriteSheet("sprites/play.png", 2, 48, 32, 4, (0, 0, 0)))
+x = spritesheet.SpriteSheet("sprites/X.png", 2, 16, 16, 4, (0, 0, 0))
+o = spritesheet.SpriteSheet("sprites/O.png", 2, 16, 16, 4, (0, 0, 0))
+
+board = board.Board(x, o)
 
 playing = False
 while True:
@@ -22,7 +23,7 @@ while True:
         if play_button.check_clicked():
             playing = True
     else:
-        screen.blit(board, (154, 154))
+        board.draw_board(screen)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
