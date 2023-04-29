@@ -52,4 +52,4 @@ class SpriteSheet:
 
         # Draw animation frame and update the rect for collision.
         screen.blit(self.animation_list[self.frame], location)
-        self.rect.update(154, 186, self.width * self.scale, self.height * self.scale)
+        self.rect.update(location[0], location[1], self.width * self.scale, self.height * self.scale)
