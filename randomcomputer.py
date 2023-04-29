@@ -3,9 +3,9 @@ import random
 import pygame
 
 
-def get_move(moves):
+def get_computer_move(moves):
     number = random.randint(0, 8)
-    while moves[number].get_move() is None:
+    while moves[number].get_move() is not None:
         number = random.randint(0, 8)
     return number
 

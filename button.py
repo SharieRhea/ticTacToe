@@ -10,8 +10,6 @@ class Button:
         self.sprite = sprite
         self.sprite_highlighted = sprite_highlighted
         self.location = location
-        self.hover = False
-        self.clicked = False
 
     def draw(self):
         if self.sprite.rect.collidepoint(pygame.mouse.get_pos()):
@@ -21,11 +19,6 @@ class Button:
 
     def check_clicked(self):
         """Returns True if the button is being clicked at that moment."""
-        self.hover = False
-        self.clicked = False
         if self.sprite.rect.collidepoint(pygame.mouse.get_pos()):
-            self.hover = True
             if pygame.mouse.get_pressed()[0]:
-                self.clicked = True
-
-        return self.clicked
+                return True

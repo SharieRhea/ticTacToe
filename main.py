@@ -11,15 +11,15 @@ alpha = (0, 0, 0)
 
 title = spritesheet.SpriteSheet("sprites/ticTacToe.png", 7, 96, 48, 4, alpha)
 
-play_regular = spritesheet.SpriteSheet("sprites/play.png", 2, 48, 32, 4, alpha)
+play_regular = spritesheet.SpriteSheet("sprites/play.png", 1, 48, 32, 4, alpha)
 play_highlighted = spritesheet.SpriteSheet("sprites/playHighlighted.png", 2, 48, 32, 4, alpha)
 play = button.Button(screen, play_regular, play_highlighted, (48, 186))
 
-quit_regular = spritesheet.SpriteSheet("sprites/quit.png", 2, 48, 32, 4, alpha)
+quit_regular = spritesheet.SpriteSheet("sprites/quit.png", 1, 48, 32, 4, alpha)
 quit_highlighted = spritesheet.SpriteSheet("sprites/quitHighlighted.png", 2, 48, 32, 4, alpha)
 quit_button = button.Button(screen, quit_regular, quit_highlighted, (272, 186))
 
-board = board.Board()
+board = board.Board((160, 160))
 
 playing = False
 while True:
@@ -38,11 +38,7 @@ while True:
             raise SystemExit
 
     else:
-        if board.is_board_full():
-            pygame.quit()
-            raise SystemExit
-        else:
-            board.draw_board(screen)
+        board.draw_board(screen)
 
     for event in pygame.event.get():
 
