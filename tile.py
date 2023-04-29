@@ -26,7 +26,7 @@ class Tile:
 
     def draw_highlighted(self, screen):
         """Draws a highlighted tile if it is being hovered and does not have a move."""
-        if self.rect.collidepoint(pygame.mouse.get_pos()) and self.move is None:
+        if self.move is None:
             screen.blit(self.highlight, (self.x_pos, self.y_pos))
 
     def draw_move(self, screen):
@@ -34,8 +34,17 @@ class Tile:
         if self.move is not None:
             self.move.play_animation(screen, (self.x_pos, self.y_pos))
 
-    def add_move(self):
+    def add_player_move(self):
         """Alters the current state of the tile to reflect its move."""
-        if self.rect.collidepoint(pygame.mouse.get_pos()) and self.move is None:
+        if self.move is None:
             if pygame.mouse.get_pressed()[0]:
                 self.move = self.x
+                return True
+        return False
+
+    def add_computer_move(self):
+        """Alters the current state of the tile to reflect a computer move."""
+        self.move = self.o
+
+    def get_move(self):
+        return self.move

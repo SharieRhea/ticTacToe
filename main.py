@@ -23,7 +23,11 @@ while True:
             # Delay prevents multiple clicks from registering
             pygame.time.delay(250)
     else:
-        board.draw_board(screen)
+        if board.is_board_full():
+            pygame.quit()
+            raise SystemExit
+        else:
+            board.draw_board(screen)
 
     for event in pygame.event.get():
 
