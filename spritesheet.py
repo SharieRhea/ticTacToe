@@ -19,7 +19,7 @@ class SpriteSheet:
 
         # Animation attributes
         self.animation_list = []
-        self.last_update = pygame.time.get_ticks()
+        self.last_update = 0
         self.animation_cooldown = 500
         self.frame = 0
 
