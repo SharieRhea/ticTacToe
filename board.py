@@ -5,22 +5,16 @@ import moves
 import tile
 
 
-def get_computer_move(info):
-    number = random.randint(0, 8)
-    while info[number].get_move() is not moves.Moves.NONE:
-        number = random.randint(0, 8)
-    return number
-
-
 class Board:
     """Models a TicTacToe board in its current state."""
 
-    def __init__(self, location):
+    def __init__(self, location, computer):
         """Initializes an empty board object."""
         self.board = pygame.image.load("sprites/board.png").convert_alpha()
         self.board.set_colorkey((0, 0, 0))
         self.board = pygame.transform.scale(self.board, (192, 192))
         self.location = location
+        self.computer = computer
         self.player_turn = True
 
         tile_size = 64
@@ -79,7 +73,7 @@ class Board:
         return moves.Moves.NONE
 
     def computer_turn(self):
-        self.tiles[get_computer_move(self.tiles)].add_computer_move()
+        self.tiles[self.computer.get_computer_move(self.tiles)].add_computer_move()
 
     def run_turn(self):
         if self.player_turn and not self.is_board_full():

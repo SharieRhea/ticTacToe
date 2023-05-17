@@ -4,6 +4,7 @@ import moves
 import spritesheet
 import button
 import board
+import randomcomputer
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -24,14 +25,25 @@ quit_regular = spritesheet.SpriteSheet("sprites/quit.png", 1, 48, 32, 4, alpha)
 quit_highlighted = spritesheet.SpriteSheet("sprites/quitHighlighted.png", 2, 48, 32, 4, alpha)
 quit_button = button.Button(screen, quit_regular, quit_highlighted)
 
+random_regular = spritesheet.SpriteSheet("sprites/random.png", 1, 64, 32, 4, alpha)
+random_highlighted = spritesheet.SpriteSheet("sprites/randomHighlighted.png", 2, 64, 32, 4, alpha)
+random_button = button.Button(screen, random_regular, random_highlighted)
+
+human_regular = spritesheet.SpriteSheet("sprites/human.png", 1, 64, 32, 4, alpha)
+human_highlighted = spritesheet.SpriteSheet("sprites/humanHighlighted.png", 2, 64, 32, 4, alpha)
+human_button = button.Button(screen, human_regular, human_highlighted)
+
+insane_regular = spritesheet.SpriteSheet("sprites/insane.png", 1, 64, 32, 4, alpha)
+insane_highlighted = spritesheet.SpriteSheet("sprites/insaneHighlighted.png", 2, 64, 32, 4, alpha)
+insane_button = button.Button(screen, insane_regular, insane_highlighted)
+
 win = spritesheet.SpriteSheet("sprites/win.png", 2, 96, 48, 4, (0, 0, 0))
 draw = spritesheet.SpriteSheet("sprites/draw.png", 2, 96, 48, 4, (0, 0, 0))
 lose = spritesheet.SpriteSheet("sprites/loss.png", 2, 96, 48, 4, (0, 0, 0))
 
-gameboard = board.Board((160, 160))
-
 playing = False
 first_game = True
+selection = False
 while True:
     screen.blit(background, (0, 0))
 
@@ -40,13 +52,21 @@ while True:
         play.draw((48, 186))
         quit_button.draw((272, 186))
         if play.check_clicked():
-            playing = True
+            selection = True
             first_game = False
             # Delay prevents multiple clicks from registering
             pygame.time.delay(250)
         if quit_button.check_clicked():
             pygame.quit()
             raise SystemExit
+    elif selection:
+        random_button.draw((128, 48))
+        human_button.draw((128, 192))
+        insane_button.draw((128, 336))
+        if random_button.check_clicked():
+            playing = True
+            selection = False
+            gameboard = board.Board((160, 160), randomcomputer.RandomComputer())
     elif not playing:
         gameboard.display_board(screen)
         if gameboard.check_win() is moves.Moves.PLAYER:
@@ -58,8 +78,7 @@ while True:
         play.draw((48, 372))
         quit_button.draw((272, 372))
         if play.check_clicked():
-            playing = True
-            gameboard = board.Board((160, 160))
+            selection = True
             # Delay prevents multiple clicks from registering
             pygame.time.delay(250)
         if quit_button.check_clicked():
