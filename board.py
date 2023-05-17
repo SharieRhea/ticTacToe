@@ -42,11 +42,17 @@ class Board:
                       tile.Tile(self.positions[8][0], self.positions[8][1], tile_size)]
 
     def draw_board(self, screen):
-        """Draws the board in its current state."""
+        """Draws the board in its current state and runs a turn."""
         screen.blit(self.board, (self.location[0], self.location[1]))
         for box in self.tiles:
             box.draw(screen)
         self.run_turn()
+
+    def display_board(self, screen):
+        """Displays the board in its current state."""
+        screen.blit(self.board, (self.location[0], self.location[1]))
+        for box in self.tiles:
+            box.draw(screen)
 
     def is_board_full(self):
         """Checks if the board is full."""
@@ -64,7 +70,7 @@ class Board:
             [self.tiles[1], self.tiles[4], self.tiles[7]],
             [self.tiles[2], self.tiles[5], self.tiles[8]],
             [self.tiles[0], self.tiles[4], self.tiles[8]],
-            [self.tiles[6], self.tiles[4], self.tiles[6]]]
+            [self.tiles[2], self.tiles[4], self.tiles[6]]]
 
     def check_win(self):
         for possibility in self.get_possibilities():

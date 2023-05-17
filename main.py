@@ -28,42 +28,47 @@ win = spritesheet.SpriteSheet("sprites/win.png", 2, 96, 48, 4, (0, 0, 0))
 draw = spritesheet.SpriteSheet("sprites/draw.png", 2, 96, 48, 4, (0, 0, 0))
 lose = spritesheet.SpriteSheet("sprites/loss.png", 2, 96, 48, 4, (0, 0, 0))
 
-board = board.Board((160, 160))
+gameboard = board.Board((160, 160))
 
 playing = False
+first_game = True
 while True:
     screen.blit(background, (0, 0))
 
-    if not playing:
+    if first_game:
         title.play_animation(screen, (66, 66))
         play.draw((48, 186))
         quit_button.draw((272, 186))
         if play.check_clicked():
             playing = True
+            first_game = False
             # Delay prevents multiple clicks from registering
             pygame.time.delay(250)
         if quit_button.check_clicked():
             pygame.quit()
             raise SystemExit
-
+    elif not playing:
+        gameboard.display_board(screen)
+        if gameboard.check_win() is moves.Moves.PLAYER:
+            win.play_animation(screen, (66, 12))
+        elif gameboard.check_win() is moves.Moves.COMPUTER:
+            lose.play_animation(screen, (66, 12))
+        elif gameboard.is_board_full():
+            draw.play_animation(screen, (66, 12))
+        play.draw((48, 372))
+        quit_button.draw((272, 372))
+        if play.check_clicked():
+            playing = True
+            gameboard = board.Board((160, 160))
+            # Delay prevents multiple clicks from registering
+            pygame.time.delay(250)
+        if quit_button.check_clicked():
+            pygame.quit()
+            raise SystemExit
     else:
-        board.draw_board(screen)
-        if board.check_win() is not moves.Moves.NONE or board.is_board_full():
-            if board.check_win() is moves.Moves.PLAYER:
-                win.play_animation(screen, (66, 12))
-            elif board.check_win() is moves.Moves.COMPUTER:
-                lose.play_animation(screen, (66, 12))
-            elif board.is_board_full():
-                draw.play_animation(screen, (66, 12))
-            play.draw((48, 372))
-            quit_button.draw((272, 372))
-            if play.check_clicked():
-                playing = True
-                # Delay prevents multiple clicks from registering
-                pygame.time.delay(250)
-            if quit_button.check_clicked():
-                pygame.quit()
-                raise SystemExit
+        gameboard.draw_board(screen)
+        if gameboard.check_win() is not moves.Moves.NONE or gameboard.is_board_full():
+            playing = False
 
     for event in pygame.event.get():
 
