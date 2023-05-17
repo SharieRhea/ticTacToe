@@ -1,4 +1,6 @@
 import pygame
+
+import moves
 import spritesheet
 import button
 import board
@@ -46,19 +48,13 @@ while True:
 
     else:
         board.draw_board(screen)
-        if board.check_win():
-            win.play_animation(screen, (66, 12))
-            play.draw((48, 372))
-            quit_button.draw((272, 372))
-            if play.check_clicked():
-                playing = True
-                # Delay prevents multiple clicks from registering
-                pygame.time.delay(250)
-            if quit_button.check_clicked():
-                pygame.quit()
-                raise SystemExit
-        elif board.is_board_full():
-            draw.play_animation(screen, (66, 12))
+        if board.check_win() is not moves.Moves.NONE or board.is_board_full():
+            if board.check_win() is moves.Moves.PLAYER:
+                win.play_animation(screen, (66, 12))
+            elif board.check_win() is moves.Moves.COMPUTER:
+                lose.play_animation(screen, (66, 12))
+            elif board.is_board_full():
+                draw.play_animation(screen, (66, 12))
             play.draw((48, 372))
             quit_button.draw((272, 372))
             if play.check_clicked():

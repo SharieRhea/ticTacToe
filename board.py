@@ -1,8 +1,15 @@
+import random
 import pygame
 
-import spritesheet
+import moves
 import tile
-import randomcomputer
+
+
+def get_computer_move(info):
+    number = random.randint(0, 8)
+    while info[number].get_move() is not moves.Moves.NONE:
+        number = random.randint(0, 8)
+    return number
 
 
 class Board:
@@ -17,43 +24,65 @@ class Board:
         self.player_turn = True
 
         tile_size = 64
-        self.positions = [(location[0], location[1]), (location[0]+tile_size, location[1]),
-                          (location[0]+2*tile_size, location[1]), (location[0], location[1]+tile_size),
-                          (location[0]+tile_size, location[1]+tile_size), (location[0]+2*tile_size, location[1]+tile_size),
-                          (location[0], location[1]+2*tile_size), (location[0]+tile_size, location[1]+2*tile_size),
-                          (location[0]+2*tile_size, location[1]+2*tile_size)]
-        self.tiles = [tile.Tile(self.positions[0][0], self.positions[0][1], tile_size), tile.Tile(self.positions[1][0], self.positions[1][1], tile_size), tile.Tile(self.positions[2][0], self.positions[2][1], tile_size),
-                      tile.Tile(self.positions[3][0], self.positions[3][1], tile_size), tile.Tile(self.positions[4][0], self.positions[4][1], tile_size), tile.Tile(self.positions[5][0], self.positions[5][1], tile_size),
-                      tile.Tile(self.positions[6][0], self.positions[6][1], tile_size), tile.Tile(self.positions[7][0], self.positions[7][1], tile_size), tile.Tile(self.positions[8][0], self.positions[8][1], tile_size)]
+        self.positions = [(location[0], location[1]), (location[0] + tile_size, location[1]),
+                          (location[0] + 2 * tile_size, location[1]), (location[0], location[1] + tile_size),
+                          (location[0] + tile_size, location[1] + tile_size),
+                          (location[0] + 2 * tile_size, location[1] + tile_size),
+                          (location[0], location[1] + 2 * tile_size),
+                          (location[0] + tile_size, location[1] + 2 * tile_size),
+                          (location[0] + 2 * tile_size, location[1] + 2 * tile_size)]
+        self.tiles = [tile.Tile(self.positions[0][0], self.positions[0][1], tile_size),
+                      tile.Tile(self.positions[1][0], self.positions[1][1], tile_size),
+                      tile.Tile(self.positions[2][0], self.positions[2][1], tile_size),
+                      tile.Tile(self.positions[3][0], self.positions[3][1], tile_size),
+                      tile.Tile(self.positions[4][0], self.positions[4][1], tile_size),
+                      tile.Tile(self.positions[5][0], self.positions[5][1], tile_size),
+                      tile.Tile(self.positions[6][0], self.positions[6][1], tile_size),
+                      tile.Tile(self.positions[7][0], self.positions[7][1], tile_size),
+                      tile.Tile(self.positions[8][0], self.positions[8][1], tile_size)]
 
     def draw_board(self, screen):
         """Draws the board in its current state."""
         screen.blit(self.board, (self.location[0], self.location[1]))
         for box in self.tiles:
             box.draw(screen)
-        self.run_turn(screen)
+        self.run_turn()
 
     def is_board_full(self):
         """Checks if the board is full."""
         for move in self.tiles:
-            if move.get_move() is None:
+            if move.get_move() is moves.Moves.NONE:
                 return False
         return True
 
+    def get_possibilities(self):
+        return [
+            [self.tiles[0], self.tiles[1], self.tiles[2]],
+            [self.tiles[3], self.tiles[4], self.tiles[5]],
+            [self.tiles[6], self.tiles[7], self.tiles[8]],
+            [self.tiles[0], self.tiles[3], self.tiles[6]],
+            [self.tiles[1], self.tiles[4], self.tiles[7]],
+            [self.tiles[2], self.tiles[5], self.tiles[8]],
+            [self.tiles[0], self.tiles[4], self.tiles[8]],
+            [self.tiles[6], self.tiles[4], self.tiles[6]]]
+
     def check_win(self):
-        return False
+        for possibility in self.get_possibilities():
+            if possibility[0].get_move() is not moves.Moves.NONE and possibility[0].get_move() == possibility[1].get_move() and possibility[1].get_move() == possibility[2].get_move():
+                return possibility[0].get_move()
+        return moves.Moves.NONE
 
     def computer_turn(self):
-        self.tiles[randomcomputer.get_computer_move(self.tiles)].set_move(False)
+        self.tiles[get_computer_move(self.tiles)].add_computer_move()
 
-    def run_turn(self, screen):
+    def run_turn(self):
         if self.player_turn and not self.is_board_full():
             for box in self.tiles:
-                if self.player_turn:
-                    if box.check_clicked():
-                        box.set_move(True)
+                if box.check_clicked():
+                    if box.get_move() is moves.Moves.NONE:
+                        box.add_player_move()
                         self.player_turn = False
-        elif not self.player_turn and not self.is_board_full():
+        if not self.player_turn and not self.is_board_full():
             self.computer_turn()
             self.player_turn = True
             pygame.time.wait(250)

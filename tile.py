@@ -1,4 +1,6 @@
 import pygame
+
+import moves
 import spritesheet
 
 
@@ -16,7 +18,7 @@ class Tile:
 
         self.x = spritesheet.SpriteSheet("sprites/X.png", 2, 16, 16, 4, (0, 0, 0))
         self.o = spritesheet.SpriteSheet("sprites/O.png", 2, 16, 16, 4, (0, 0, 0))
-        self.move = None
+        self.move = moves.Moves.NONE
 
         # Loads highlight sprite for the tile
         highlight = pygame.image.load("sprites/highlightedTile.png").convert_alpha()
@@ -25,8 +27,10 @@ class Tile:
 
     def draw(self, screen):
         """Draws the respective move for that tile."""
-        if self.move is not None:
-            self.move.play_animation(screen, (self.x_pos, self.y_pos))
+        if self.move is moves.Moves.PLAYER:
+            self.x.play_animation(screen, (self.x_pos, self.y_pos))
+        elif self.move is moves.Moves.COMPUTER:
+            self.o.play_animation(screen, (self.x_pos, self.y_pos))
         elif self.rect.collidepoint(pygame.mouse.get_pos()):
             screen.blit(self.highlight, (self.x_pos, self.y_pos))
 
@@ -35,23 +39,13 @@ class Tile:
             if pygame.mouse.get_pressed()[0]:
                 return True
 
-    def set_move(self, player):
-        if player:
-            self.move = self.x
-        else:
-            self.move = self.o
-
     def add_player_move(self):
         """Alters the current state of the tile to reflect its move."""
-        if self.move is None:
-            if pygame.mouse.get_pressed()[0]:
-                self.move = self.x
-                return True
-        return False
+        self.move = moves.Moves.PLAYER
 
     def add_computer_move(self):
         """Alters the current state of the tile to reflect a computer move."""
-        self.move = self.o
+        self.move = moves.Moves.COMPUTER
 
     def get_move(self):
         return self.move
