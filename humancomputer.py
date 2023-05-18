@@ -11,6 +11,7 @@ class HumanComputer:
 
     def get_computer_move(self, info):
         possibility_count = 0
+        block_move = None
         for possibility in self.get_possibilities(info):
             # create set of unique moves in line
             moves = set()
@@ -19,18 +20,18 @@ class HumanComputer:
 
             # check for opportunity
             if len(moves) == 2 and Moves.NONE in moves:
-                empties = 0
-                for move in possibility:
-                    if move is Moves.NONE:
-                        empties += 1
-
-                if empties == 1:
+                if possibility.count(Moves.NONE) == 1:
                     move_index = possibility.index(Moves.NONE)
 
                     # find exact tile number
-                    return self.get_tile_index(possibility_count, move_index)
+                    if Moves.COMPUTER in moves:
+                        return self.get_tile_index(possibility_count, move_index)
+                    elif Moves.PLAYER in moves:
+                        block_move = self.get_tile_index(possibility_count, move_index)
             possibility_count += 1
 
+        if block_move is not None:
+            return block_move
         return self.get_random_move(info)
 
     def get_possibilities(self, tiles):
