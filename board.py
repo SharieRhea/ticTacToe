@@ -1,8 +1,7 @@
-import random
 import pygame
 
-import moves
-import tile
+from moves import Moves
+from tile import Tile
 
 
 class Board:
@@ -25,15 +24,15 @@ class Board:
                           (location[0], location[1] + 2 * tile_size),
                           (location[0] + tile_size, location[1] + 2 * tile_size),
                           (location[0] + 2 * tile_size, location[1] + 2 * tile_size)]
-        self.tiles = [tile.Tile(self.positions[0][0], self.positions[0][1], tile_size),
-                      tile.Tile(self.positions[1][0], self.positions[1][1], tile_size),
-                      tile.Tile(self.positions[2][0], self.positions[2][1], tile_size),
-                      tile.Tile(self.positions[3][0], self.positions[3][1], tile_size),
-                      tile.Tile(self.positions[4][0], self.positions[4][1], tile_size),
-                      tile.Tile(self.positions[5][0], self.positions[5][1], tile_size),
-                      tile.Tile(self.positions[6][0], self.positions[6][1], tile_size),
-                      tile.Tile(self.positions[7][0], self.positions[7][1], tile_size),
-                      tile.Tile(self.positions[8][0], self.positions[8][1], tile_size)]
+        self.tiles = [Tile(self.positions[0][0], self.positions[0][1], tile_size),
+                      Tile(self.positions[1][0], self.positions[1][1], tile_size),
+                      Tile(self.positions[2][0], self.positions[2][1], tile_size),
+                      Tile(self.positions[3][0], self.positions[3][1], tile_size),
+                      Tile(self.positions[4][0], self.positions[4][1], tile_size),
+                      Tile(self.positions[5][0], self.positions[5][1], tile_size),
+                      Tile(self.positions[6][0], self.positions[6][1], tile_size),
+                      Tile(self.positions[7][0], self.positions[7][1], tile_size),
+                      Tile(self.positions[8][0], self.positions[8][1], tile_size)]
 
     def draw_board(self, screen):
         """Draws the board in its current state and runs a turn."""
@@ -51,7 +50,7 @@ class Board:
     def is_board_full(self):
         """Checks if the board is full."""
         for move in self.tiles:
-            if move.get_move() is moves.Moves.NONE:
+            if move.get_move() is Moves.NONE:
                 return False
         return True
 
@@ -68,9 +67,10 @@ class Board:
 
     def check_win(self):
         for possibility in self.get_possibilities():
-            if possibility[0].get_move() is not moves.Moves.NONE and possibility[0].get_move() == possibility[1].get_move() and possibility[1].get_move() == possibility[2].get_move():
+            if possibility[0].get_move() is not Moves.NONE and possibility[0].get_move() == \
+                    possibility[1].get_move() and possibility[1].get_move() == possibility[2].get_move():
                 return possibility[0].get_move()
-        return moves.Moves.NONE
+        return Moves.NONE
 
     def computer_turn(self):
         self.tiles[self.computer.get_computer_move(self.tiles)].add_computer_move()
@@ -79,7 +79,7 @@ class Board:
         if self.player_turn and not self.is_board_full():
             for box in self.tiles:
                 if box.check_clicked():
-                    if box.get_move() is moves.Moves.NONE:
+                    if box.get_move() is Moves.NONE:
                         box.add_player_move()
                         self.player_turn = False
         if not self.player_turn and not self.is_board_full():
