@@ -85,7 +85,7 @@ class Board:
                     if box.get_move() is Moves.NONE:
                         box.add_player_move()
                         self.player_turn = False
-        if not self.player_turn and not self.is_board_full():
+        elif not self.player_turn and not self.is_board_full():
             self.computer_turn()
             self.player_turn = True
             pygame.time.wait(250)

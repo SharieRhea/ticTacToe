@@ -69,10 +69,14 @@ while True:
         if random_button.check_clicked():
             playing = True
             selection = False
+            # Delay prevents multiple clicks from registering
+            pygame.time.delay(250)
             gameboard = Board((160, 160), RandomComputer())
         if human_button.check_clicked():
             playing = True
             selection = False
+            # Delay prevents multiple clicks from registering
+            pygame.time.delay(250)
             gameboard = Board((160, 160), HumanComputer())
     # game must be over, display win/loss screen, play/quit options, and completed board
     elif not playing:
