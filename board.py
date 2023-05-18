@@ -67,9 +67,12 @@ class Board:
 
     def check_win(self):
         for possibility in self.get_possibilities():
-            if possibility[0].get_move() is not Moves.NONE and possibility[0].get_move() == \
-                    possibility[1].get_move() and possibility[1].get_move() == possibility[2].get_move():
-                return possibility[0].get_move()
+            moves = set()
+            for tile in possibility:
+                moves.add(tile.get_move())
+            if len(moves) == 1:
+                for move in moves:
+                    return move
         return Moves.NONE
 
     def computer_turn(self):

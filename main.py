@@ -5,6 +5,7 @@ from spritesheet import SpriteSheet
 from button import Button
 from board import Board
 from randomcomputer import RandomComputer
+from humancomputer import HumanComputer
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -69,6 +70,10 @@ while True:
             playing = True
             selection = False
             gameboard = Board((160, 160), RandomComputer())
+        if human_button.check_clicked():
+            playing = True
+            selection = False
+            gameboard = Board((160, 160), HumanComputer())
     # game must be over, display win/loss screen, play/quit options, and completed board
     elif not playing:
         gameboard.display_board(screen)
