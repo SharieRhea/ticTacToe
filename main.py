@@ -6,6 +6,7 @@ from button import Button
 from board import Board
 from randomcomputer import RandomComputer
 from humancomputer import HumanComputer
+from timer import Timer
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -56,6 +57,7 @@ while True:
         if play.check_clicked():
             selection = True
             first_game = False
+            timer = Timer("sprites/numbers.png")
             # Delay prevents multiple clicks from registering
             pygame.time.delay(250)
         if quit_button.check_clicked():
@@ -91,6 +93,7 @@ while True:
         quit_button.draw((272, 372))
         if play.check_clicked():
             selection = True
+            timer = Timer("sprites/numbers.png")
             # Delay prevents multiple clicks from registering
             pygame.time.delay(250)
         if quit_button.check_clicked():
@@ -99,6 +102,11 @@ while True:
     # active game
     else:
         gameboard.draw_board(screen)
+        quit_button.draw((272, 372))
+        timer.display_timer(screen)
+        if quit_button.check_clicked():
+            pygame.quit()
+            raise SystemExit
         if gameboard.check_win() is not Moves.NONE or gameboard.is_board_full():
             playing = False
 
