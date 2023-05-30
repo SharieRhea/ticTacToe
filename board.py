@@ -34,18 +34,18 @@ class Board:
                       Tile(self.positions[7][0], self.positions[7][1], tile_size),
                       Tile(self.positions[8][0], self.positions[8][1], tile_size)]
 
-    def draw_board(self, screen):
+    def draw_board(self, screen, frame):
         """Draws the board in its current state and runs a turn."""
         screen.blit(self.board, (self.location[0], self.location[1]))
         for box in self.tiles:
-            box.draw(screen)
+            box.draw(screen, frame)
         self.run_turn()
 
-    def display_board(self, screen):
+    def display_board(self, screen, frame):
         """Displays the board in its current state."""
         screen.blit(self.board, (self.location[0], self.location[1]))
         for box in self.tiles:
-            box.draw(screen)
+            box.draw(screen, frame)
 
     def is_board_full(self):
         """Checks if the board is full."""

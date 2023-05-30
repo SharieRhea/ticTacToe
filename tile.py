@@ -25,12 +25,12 @@ class Tile:
         highlight.set_colorkey((0, 0, 0))
         self.highlight = pygame.transform.scale(highlight, (width, width))
 
-    def draw(self, screen):
+    def draw(self, screen, frame):
         """Draws the respective move for that tile."""
         if self.move is Moves.PLAYER:
-            self.x.play_animation(screen, (self.x_pos, self.y_pos))
+            self.x.play_animation(screen, frame, (self.x_pos, self.y_pos))
         elif self.move is Moves.COMPUTER:
-            self.o.play_animation(screen, (self.x_pos, self.y_pos))
+            self.o.play_animation(screen, frame, (self.x_pos, self.y_pos))
         elif self.rect.collidepoint(pygame.mouse.get_pos()):
             screen.blit(self.highlight, (self.x_pos, self.y_pos))
 

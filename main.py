@@ -47,13 +47,14 @@ first_game = True
 selection = False
 
 while True:
+    frame = pygame.time.get_ticks() // 500
     screen.blit(background, (0, 0))
 
     # displays title screen
     if first_game:
-        title.play_animation(screen, (66, 66))
-        play.draw((48, 186))
-        quit_button.draw((272, 186))
+        title.play_animation(screen, frame, (66, 66))
+        play.draw(frame, (48, 186))
+        quit_button.draw(frame, (272, 186))
         if play.check_clicked():
             selection = True
             first_game = False
@@ -65,9 +66,9 @@ while True:
             raise SystemExit
     # displays computer player selection screen
     elif selection:
-        random_button.draw((128, 48))
-        human_button.draw((128, 192))
-        insane_button.draw((128, 336))
+        random_button.draw(frame, (128, 48))
+        human_button.draw(frame, (128, 192))
+        insane_button.draw(frame, (128, 336))
         if random_button.check_clicked():
             playing = True
             selection = False
@@ -82,15 +83,15 @@ while True:
             gameboard = Board((160, 160), HumanComputer())
     # game must be over, display win/loss screen, play/quit options, and completed board
     elif not playing:
-        gameboard.display_board(screen)
+        gameboard.display_board(screen, frame)
         if gameboard.check_win() is Moves.PLAYER:
-            win.play_animation(screen, (66, 12))
+            win.play_animation(screen, frame, (66, 12))
         elif gameboard.check_win() is Moves.COMPUTER:
-            lose.play_animation(screen, (66, 12))
+            lose.play_animation(screen, frame, (66, 12))
         elif gameboard.is_board_full():
-            draw.play_animation(screen, (66, 12))
-        play.draw((48, 372))
-        quit_button.draw((272, 372))
+            draw.play_animation(screen, frame, (66, 12))
+        play.draw(frame, (48, 372))
+        quit_button.draw(frame, (272, 372))
         if play.check_clicked():
             selection = True
             timer = Timer("sprites/numbers.png")
@@ -101,8 +102,8 @@ while True:
             raise SystemExit
     # active game
     else:
-        gameboard.draw_board(screen)
-        quit_button.draw((272, 372))
+        gameboard.draw_board(screen, frame)
+        quit_button.draw(frame, (272, 372))
         timer.display_timer(screen)
         if quit_button.check_clicked():
             pygame.quit()

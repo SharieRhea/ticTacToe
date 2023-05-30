@@ -19,9 +19,7 @@ class SpriteSheet:
 
         # Animation attributes
         self.animation_list = []
-        self.last_update = 0
         self.animation_cooldown = 500
-        self.frame = 0
 
         self.create_animation()
 
@@ -41,15 +39,9 @@ class SpriteSheet:
         for x in range(animation_steps):
             self.animation_list.append(self.get_frame(x))
 
-    def play_animation(self, screen, location):
-        """Plays the animations frames in order, looping back to frame0 when necessary."""
-        current_time = pygame.time.get_ticks()
-        if current_time - self.last_update >= self.animation_cooldown:
-            self.frame += 1
-            self.last_update = current_time
-            if self.frame >= len(self.animation_list):
-                self.frame = 0
+    def play_animation(self, screen, frame, location):
+        """Plays the animations frames in order, looping back to frame 0 when necessary."""
 
         # Draw animation frame and update the rect for collision.
-        screen.blit(self.animation_list[self.frame], location)
+        screen.blit(self.animation_list[frame % len(self.animation_list)], location)
         self.rect.update(location[0], location[1], self.width * self.scale, self.height * self.scale)

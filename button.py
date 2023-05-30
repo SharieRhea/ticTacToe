@@ -10,11 +10,11 @@ class Button:
         self.sprite = sprite
         self.sprite_highlighted = sprite_highlighted
 
-    def draw(self, location):
+    def draw(self, frame, location):
         if self.sprite.rect.collidepoint(pygame.mouse.get_pos()):
-            self.sprite_highlighted.play_animation(self.screen, location)
+            self.sprite_highlighted.play_animation(self.screen, frame, location)
         else:
-            self.sprite.play_animation(self.screen, location)
+            self.sprite.play_animation(self.screen, frame, location)
 
     def check_clicked(self):
         """Returns True if the button is being clicked at that moment."""
