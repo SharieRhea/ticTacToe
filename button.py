@@ -11,6 +11,7 @@ class Button:
         self.sprite_highlighted = sprite_highlighted
 
     def draw(self, frame, location):
+        """Displays the current state of the button (normal/hovered)."""
         if self.sprite.rect.collidepoint(pygame.mouse.get_pos()):
             self.sprite_highlighted.play_animation(self.screen, frame, location)
         else:

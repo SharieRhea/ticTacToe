@@ -1,11 +1,11 @@
 import pygame
 
+from states import States
 from moves import Moves
 from spritesheet import SpriteSheet
 from button import Button
 from board import Board
-from randomcomputer import RandomComputer
-from humancomputer import HumanComputer
+import computers
 from timer import Timer
 
 pygame.init()
@@ -22,7 +22,7 @@ title = SpriteSheet("sprites/ticTacToe.png", 7, 96, 48, 4, alpha)
 # initialize buttons
 play_regular = SpriteSheet("sprites/play.png", 1, 48, 32, 4, alpha)
 play_highlighted = SpriteSheet("sprites/playHighlighted.png", 2, 48, 32, 4, alpha)
-play = Button(screen, play_regular, play_highlighted)
+play_button = Button(screen, play_regular, play_highlighted)
 quit_regular = SpriteSheet("sprites/quit.png", 1, 48, 32, 4, alpha)
 quit_highlighted = SpriteSheet("sprites/quitHighlighted.png", 2, 48, 32, 4, alpha)
 quit_button = Button(screen, quit_regular, quit_highlighted)
@@ -38,79 +38,87 @@ insane_button = Button(screen, insane_regular, insane_highlighted)
 
 # initialize win/loss screens
 win = SpriteSheet("sprites/win.png", 2, 96, 48, 4, (0, 0, 0))
-draw = SpriteSheet("sprites/draw.png", 2, 96, 48, 4, (0, 0, 0))
+tie = SpriteSheet("sprites/draw.png", 2, 96, 48, 4, (0, 0, 0))
 lose = SpriteSheet("sprites/loss.png", 2, 96, 48, 4, (0, 0, 0))
 
-# state variables
-playing = False
-first_game = True
-selection = False
+state = States.TITLE
+timer = Timer("sprites/numbers.png")
+
+
+def play_button_clicked():
+    """Updates state to reflect game status."""
+    if play_button.check_clicked():
+        global state
+        state = States.SELECTION
+        # Delay prevents multiple clicks from registering
+        pygame.time.delay(250)
+
+
+def selection_clicked():
+    global state
+    state = States.GAME
+    global timer
+    timer = Timer("sprites/numbers.png")
+    # Delay prevents multiple clicks from registering
+    pygame.time.delay(250)
+
+
+def quit_button_clicked():
+    """Exits the game."""
+    if quit_button.check_clicked():
+        pygame.quit()
+        raise SystemExit
+
 
 while True:
     frame = pygame.time.get_ticks() // 500
     screen.blit(background, (0, 0))
 
     # displays title screen
-    if first_game:
-        title.play_animation(screen, frame, (66, 66))
-        play.draw(frame, (48, 186))
-        quit_button.draw(frame, (272, 186))
-        if play.check_clicked():
-            selection = True
-            first_game = False
-            timer = Timer("sprites/numbers.png")
-            # Delay prevents multiple clicks from registering
-            pygame.time.delay(250)
-        if quit_button.check_clicked():
-            pygame.quit()
-            raise SystemExit
-    # displays computer player selection screen
-    elif selection:
-        random_button.draw(frame, (128, 48))
-        human_button.draw(frame, (128, 192))
-        insane_button.draw(frame, (128, 336))
-        if random_button.check_clicked():
-            playing = True
-            selection = False
-            # Delay prevents multiple clicks from registering
-            pygame.time.delay(250)
-            gameboard = Board((160, 160), RandomComputer())
-        if human_button.check_clicked():
-            playing = True
-            selection = False
-            # Delay prevents multiple clicks from registering
-            pygame.time.delay(250)
-            gameboard = Board((160, 160), HumanComputer())
-    # game must be over, display win/loss screen, play/quit options, and completed board
-    elif not playing:
-        gameboard.display_board(screen, frame)
-        if gameboard.check_win() is Moves.PLAYER:
-            win.play_animation(screen, frame, (66, 12))
-        elif gameboard.check_win() is Moves.COMPUTER:
-            lose.play_animation(screen, frame, (66, 12))
-        elif gameboard.is_board_full():
-            draw.play_animation(screen, frame, (66, 12))
-        play.draw(frame, (48, 372))
-        quit_button.draw(frame, (272, 372))
-        if play.check_clicked():
-            selection = True
-            timer = Timer("sprites/numbers.png")
-            # Delay prevents multiple clicks from registering
-            pygame.time.delay(250)
-        if quit_button.check_clicked():
-            pygame.quit()
-            raise SystemExit
-    # active game
-    else:
-        gameboard.draw_board(screen, frame)
-        quit_button.draw(frame, (272, 372))
-        timer.display_timer(screen)
-        if quit_button.check_clicked():
-            pygame.quit()
-            raise SystemExit
-        if gameboard.check_win() is not Moves.NONE or gameboard.is_board_full():
-            playing = False
+    match state:
+        case States.TITLE:
+            title.play_animation(screen, frame, (66, 66))
+            play_button.draw(frame, (48, 186))
+            quit_button.draw(frame, (272, 186))
+            play_button_clicked()
+            quit_button_clicked()
 
+        case States.SELECTION:
+            random_button.draw(frame, (128, 48))
+            human_button.draw(frame, (128, 192))
+            insane_button.draw(frame, (128, 336))
+            if random_button.check_clicked():
+                selection_clicked()
+                game_board = Board((160, 160), computers.RandomComputer())
+            if human_button.check_clicked():
+                selection_clicked()
+                game_board = Board((160, 160), computers.HumanComputer())
+
+        case States.GAME_OVER:
+            game_board.display_board(screen, frame)
+
+            # Displays win/lose/tie
+            if game_board.check_win() is Moves.PLAYER:
+                win.play_animation(screen, frame, (66, 12))
+            elif game_board.check_win() is Moves.COMPUTER:
+                lose.play_animation(screen, frame, (66, 12))
+            elif game_board.is_board_full():
+                tie.play_animation(screen, frame, (66, 12))
+
+            play_button.draw(frame, (48, 372))
+            quit_button.draw(frame, (272, 372))
+            play_button_clicked()
+            quit_button_clicked()
+
+        case States.GAME:
+            game_board.draw_board(screen, frame)
+            quit_button.draw(frame, (272, 372))
+            timer.display_timer(screen)
+            quit_button_clicked()
+            if game_board.check_win() is not Moves.NONE or game_board.is_board_full():
+                state = States.GAME_OVER
+
+    # Allows user to close program using the "X" button in the windows
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()

@@ -35,12 +35,13 @@ class Tile:
             screen.blit(self.highlight, (self.x_pos, self.y_pos))
 
     def check_clicked(self):
+        """Checks if the tile is currently being clicked."""
         if self.rect.collidepoint(pygame.mouse.get_pos()):
             if pygame.mouse.get_pressed()[0]:
                 return True
 
     def add_player_move(self):
-        """Alters the current state of the tile to reflect its move."""
+        """Alters the current state of the tile to reflect a player move."""
         self.move = Moves.PLAYER
 
     def add_computer_move(self):
@@ -48,4 +49,5 @@ class Tile:
         self.move = Moves.COMPUTER
 
     def get_move(self):
+        """Returns the tile's current move/status."""
         return self.move

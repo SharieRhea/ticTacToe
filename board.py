@@ -55,6 +55,7 @@ class Board:
         return True
 
     def get_possibilities(self):
+        """Returns a move to win, block the other player, or randomly, in that order."""
         return [
             [self.tiles[0], self.tiles[1], self.tiles[2]],
             [self.tiles[3], self.tiles[4], self.tiles[5]],
@@ -66,19 +67,22 @@ class Board:
             [self.tiles[2], self.tiles[4], self.tiles[6]]]
 
     def check_win(self):
+        """Checks the board for a win from either side, returns Moves.NONE if there is no win."""
         for possibility in self.get_possibilities():
             moves = set()
             for tile in possibility:
                 moves.add(tile.get_move())
-            if len(moves) == 1:
+            if len(moves) == 1 and not moves.__contains__(Moves.NONE):
                 for move in moves:
                     return move
         return Moves.NONE
 
     def computer_turn(self):
+        """Runs the computer's turn by adding its move to the correct tile."""
         self.tiles[self.computer.get_computer_move(self.tiles)].add_computer_move()
 
     def run_turn(self):
+        """Runs the active board, depending on player_turn."""
         if self.player_turn and not self.is_board_full():
             for box in self.tiles:
                 if box.check_clicked():
