@@ -146,6 +146,8 @@ class InsaneComputer:
         for child in root.children:
             utilities.append(Tree.determine_utility(tree, child))
 
+        print(utilities)
+        
         index = utilities.index(max(utilities))
         empties = -1
         tiles = -1

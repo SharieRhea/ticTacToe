@@ -96,12 +96,6 @@ while True:
             if insane_button.check_clicked():
                 selection_clicked()
                 game_board = Board((160, 160), computers.InsaneComputer())
-                tiles = game_board.get_tiles()
-                tiles[0].add_player_move()
-                tiles[2].add_computer_move()
-                tiles[4].add_player_move()
-                tiles[7].add_computer_move()
-
 
         case States.GAME_OVER:
             game_board.display_board(screen, frame)

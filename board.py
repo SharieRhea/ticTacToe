@@ -2,6 +2,7 @@ import pygame
 import copy
 
 from moves import Moves
+from tempboard import TempBoard
 from tile import Tile
 
 
@@ -99,7 +100,7 @@ class Board:
         return self.tiles
 
     def copy(self):
-        board = Board(self.location, self.computer)
+        board = TempBoard(self.computer)
         board.tiles = [tile.copy() for tile in self.get_tiles()]
         board.player_turn = self.player_turn
         return board

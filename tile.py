@@ -2,6 +2,7 @@ import pygame
 
 from moves import Moves
 from spritesheet import SpriteSheet
+from tempboard import TempTile
 
 
 class Tile:
@@ -53,6 +54,6 @@ class Tile:
         return self.move
 
     def copy(self):
-        tile = Tile(self.x_pos, self.y_pos, self.width)
+        tile = TempTile()
         tile.move = self.get_move()
         return tile
