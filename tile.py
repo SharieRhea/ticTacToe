@@ -51,3 +51,8 @@ class Tile:
     def get_move(self):
         """Returns the tile's current move/status."""
         return self.move
+
+    def copy(self):
+        tile = Tile(self.x_pos, self.y_pos, self.width)
+        tile.move = self.get_move()
+        return tile

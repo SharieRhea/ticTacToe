@@ -1,4 +1,5 @@
 import pygame
+import copy
 
 from moves import Moves
 from tile import Tile
@@ -79,7 +80,7 @@ class Board:
 
     def computer_turn(self):
         """Runs the computer's turn by adding its move to the correct tile."""
-        self.tiles[self.computer.get_computer_move(self.tiles)].add_computer_move()
+        self.tiles[self.computer.get_computer_move(self)].add_computer_move()
 
     def run_turn(self):
         """Runs the active board, depending on player_turn."""
@@ -93,3 +94,12 @@ class Board:
             self.computer_turn()
             self.player_turn = True
             pygame.time.wait(250)
+
+    def get_tiles(self):
+        return self.tiles
+
+    def copy(self):
+        board = Board(self.location, self.computer)
+        board.tiles = [tile.copy() for tile in self.get_tiles()]
+        board.player_turn = self.player_turn
+        return board

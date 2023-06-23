@@ -93,6 +93,15 @@ while True:
             if human_button.check_clicked():
                 selection_clicked()
                 game_board = Board((160, 160), computers.HumanComputer())
+            if insane_button.check_clicked():
+                selection_clicked()
+                game_board = Board((160, 160), computers.InsaneComputer())
+                tiles = game_board.get_tiles()
+                tiles[0].add_player_move()
+                tiles[2].add_computer_move()
+                tiles[4].add_player_move()
+                tiles[7].add_computer_move()
+
 
         case States.GAME_OVER:
             game_board.display_board(screen, frame)
@@ -114,7 +123,9 @@ while True:
             game_board.draw_board(screen, frame)
             quit_button.draw(frame, (272, 372))
             timer.display_timer(screen)
-            quit_button_clicked()
+            if quit_button.check_clicked():
+                state = States.TITLE
+                pygame.time.delay(250)
             if game_board.check_win() is not Moves.NONE or game_board.is_board_full():
                 state = States.GAME_OVER
 
