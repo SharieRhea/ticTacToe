@@ -1,7 +1,9 @@
 import random
 from moves import Moves
 
+
 def get_random_move(board):
+    """Randomly generates moves until one is possible (no move already there)."""
     number = random.randint(0, 8)
     while board.get_tiles()[number].get_move() is not Moves.NONE:
         number = random.randint(0, 8)
@@ -12,6 +14,7 @@ class RandomComputer:
     """Models a computer players that picks random moves."""
 
     def get_computer_move(self, board):
+        """Calls get_random_move to maintain interface."""
         return get_random_move(board)
 
 
@@ -85,17 +88,21 @@ class Tree:
 
     class Node:
         """Models a node of tree."""
+
         def __init__(self, board):
+            """Initializes a node."""
             self.children = []
             self.board = board.copy()
             self.utility = 0
 
     def __init__(self, board):
+        """Initializes a tree."""
         self.root = self.Node(board.copy())
         self.build_tree(self.root)
 
     def build_tree(self, node):
-
+        """Recursively builds a tree with every possible game outcome based on first move."""
+        # Check base case, set utilities
         if node.board.check_win() is Moves.PLAYER:
             node.utility = -1
         elif node.board.check_win() is Moves.COMPUTER:
@@ -103,12 +110,13 @@ class Tree:
         elif node.board.is_board_full():
             node.utility = 0
         else:
+            # Find empty_tiles/possible next moves
             empty_tiles = []
             for tile in node.board.get_tiles():
                 if tile.get_move() is Moves.NONE:
                     empty_tiles.append(tile)
 
-            while len(node.children) != len(empty_tiles) and node.board.check_win() is Moves.NONE and not node.board.is_board_full():
+            while len(node.children) != len(empty_tiles):
                 child = Tree.Node(node.board.copy())
 
                 empty_child_tiles = []
@@ -122,6 +130,7 @@ class Tree:
                 else:
                     empty_child_tiles[len(node.children)].add_player_move()
                     child.board.player_turn = False
+
                 node.children.append(child)
                 self.build_tree(child)
 
@@ -137,24 +146,57 @@ class Tree:
         return utility
 
 
+def is_same_state(state1, state2):
+    """Returns True if the two states are the same, False otherwise."""
+    index = 0
+    for tile in state1.board.get_tiles():
+        if tile.get_move() != state2.get_tiles()[index].get_move():
+            return False
+        index += 1
+
+    return True
+
+
 class InsaneComputer:
     """Models an unbeatable computer that uses a tree to determine moves."""
-    def get_computer_move(self, board):
-        tree = Tree(board)
-        root = tree.root
-        utilities = []
-        for child in root.children:
-            utilities.append(Tree.determine_utility(tree, child))
 
-        print(utilities)
-        
-        index = utilities.index(max(utilities))
+    def __init__(self):
+        """Initializes a computer for the game."""
+        self.tree = None
+        self.state = None
+
+    def get_computer_move(self, board):
+        """Updates state based on most recent player move, determines and returns best move, and updates state again."""
+        # Build tree if there isn't one.
+        if self.tree is None:
+            self.tree = Tree(board)
+            self.state = self.tree.root
+        else:
+            # Update state to reflect last player move.
+            for child in self.state.children:
+                if is_same_state(child, board):
+                    self.state = child
+
+        # Determine index of the best computer move.
+        utilities = []
+        for child in self.state.children:
+            utilities.append(self.tree.determine_utility(child))
+        utility_index = utilities.index(max(utilities))
+
+        # Update state to reflect computer move.
+        i = 0
+        for child in self.state.children:
+            if i == utility_index:
+                self.state = child
+            i += 1
+
+        # Determine move index relative to whole board.
         empties = -1
-        tiles = -1
-        for tile in root.board.get_tiles():
+        index = -1
+        for tile in board.get_tiles():
             if tile.get_move() is Moves.NONE:
                 empties += 1
-            tiles += 1
+            index += 1
 
-            if index == empties:
-                return tiles
+            if utility_index == empties:
+                return index
