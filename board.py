@@ -81,7 +81,9 @@ class Board:
 
     def computer_turn(self):
         """Runs the computer's turn by adding its move to the correct tile."""
-        self.tiles[self.computer.get_computer_move(self)].add_computer_move()
+        move = self.computer.get_computer_move(self)
+        if move is not None:
+            self.tiles[move].add_computer_move()
 
     def run_turn(self):
         """Runs the active board, depending on player_turn."""

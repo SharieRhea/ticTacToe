@@ -35,6 +35,9 @@ human_button = Button(screen, human_regular, human_highlighted)
 insane_regular = SpriteSheet("sprites/insane.png", 1, 64, 32, 4, alpha)
 insane_highlighted = SpriteSheet("sprites/insaneHighlighted.png", 2, 64, 32, 4, alpha)
 insane_button = Button(screen, insane_regular, insane_highlighted)
+secret_regular = SpriteSheet("sprites/secret.png", 1, 48, 32, 4, alpha)
+secret_highlighted = SpriteSheet("sprites/secretHighlighted.png", 2, 48, 32, 4, alpha)
+secret_button = Button(screen, secret_regular, secret_highlighted)
 
 # initialize win/loss screens
 win = SpriteSheet("sprites/win.png", 2, 96, 48, 4, (0, 0, 0))
@@ -87,6 +90,7 @@ while True:
             random_button.draw(frame, (128, 48))
             human_button.draw(frame, (128, 192))
             insane_button.draw(frame, (128, 336))
+            secret_button.draw(frame, (363, 420))
             if random_button.check_clicked():
                 selection_clicked()
                 game_board = Board((160, 160), computers.RandomComputer())
@@ -96,6 +100,9 @@ while True:
             if insane_button.check_clicked():
                 selection_clicked()
                 game_board = Board((160, 160), computers.InsaneComputer())
+            if secret_button.check_clicked():
+                selection_clicked()
+                game_board = Board((160, 160), computers.SecretComputer())
 
         case States.GAME_OVER:
             game_board.display_board(screen, frame)
