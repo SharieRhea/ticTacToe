@@ -26,6 +26,9 @@ play_button = Button(screen, play_regular, play_highlighted)
 quit_regular = SpriteSheet("sprites/quit.png", 1, 48, 32, 4, alpha)
 quit_highlighted = SpriteSheet("sprites/quitHighlighted.png", 2, 48, 32, 4, alpha)
 quit_button = Button(screen, quit_regular, quit_highlighted)
+instructions_regular = SpriteSheet("sprites/instructions.png", 1, 96, 32, 4, alpha)
+instructions_highlighted = SpriteSheet("sprites/instructionsHighlighted.png", 2, 96, 32, 4, alpha)
+instructions_button = Button(screen, instructions_regular, instructions_highlighted)
 random_regular = SpriteSheet("sprites/random.png", 1, 64, 32, 4, alpha)
 random_highlighted = SpriteSheet("sprites/randomHighlighted.png", 2, 64, 32, 4, alpha)
 random_button = Button(screen, random_regular, random_highlighted)
@@ -38,6 +41,23 @@ insane_button = Button(screen, insane_regular, insane_highlighted)
 secret_regular = SpriteSheet("sprites/secret.png", 1, 48, 32, 4, alpha)
 secret_highlighted = SpriteSheet("sprites/secretHighlighted.png", 2, 48, 32, 4, alpha)
 secret_button = Button(screen, secret_regular, secret_highlighted)
+
+my_font = pygame.font.SysFont("Minecraftia", 18)
+instructions_text = [my_font.render("How to Play:", False, (255, 255, 255)),
+                     my_font.render("   You will plays as 'X' and the computer", False, (255, 255, 255)),
+                     my_font.render("   will play as 'O'.", False, (255, 255, 255)),
+                     my_font.render("   Starting with you, each player will take", False, (255, 255, 255)),
+                     my_font.render("   turns placing their symbol in a square.", False, (255, 255, 255)),
+                     my_font.render("   A player wins when they have three of", False, (255, 255, 255)),
+                     my_font.render("   their own symbols in a row.", False, (255, 255, 255)),
+                     my_font.render("", False, (0, 0, 0)),
+                     my_font.render("Types of Computers:", False, (255, 255, 255)),
+                     my_font.render("   Random: Will play a random move every turn.", False, (255, 255, 255)),
+                     my_font.render("   Human: Will play a move to win or block ", False, (255, 255, 255)),
+                     my_font.render("   you from winning. If this isn't an ", False, (255, 255, 255)),
+                     my_font.render("   option, plays a random move.", False, (255, 255, 255)),
+                     my_font.render("   Insane: Will play the move that ", False, (255, 255, 255)),
+                     my_font.render("   statistically leads to the most wins.", False, (255, 255, 255))]
 
 # initialize win/loss screens
 win = SpriteSheet("sprites/win.png", 2, 96, 48, 4, (0, 0, 0))
@@ -73,6 +93,13 @@ def quit_button_clicked():
         raise SystemExit
 
 
+def instructions_button_clicked():
+    """Changes the state to reflect displaying the instructions screen."""
+    if instructions_button.check_clicked():
+        global state
+        state = States.INSTRUCTIONS
+
+
 while True:
     frame = pygame.time.get_ticks() // 500
     screen.blit(background, (0, 0))
@@ -83,8 +110,22 @@ while True:
             title.play_animation(screen, frame, (66, 66))
             play_button.draw(frame, (48, 186))
             quit_button.draw(frame, (272, 186))
+            instructions_button.draw(frame, (66, 306))
             play_button_clicked()
             quit_button_clicked()
+            instructions_button_clicked()
+
+        case States.INSTRUCTIONS:
+            height = 20
+            for text in instructions_text:
+                screen.blit(text, (10, height))
+                height += 25
+            play_button.draw(frame, (48, 390))
+            quit_button.draw(frame, (272, 390))
+            play_button_clicked()
+            if quit_button.check_clicked():
+                state = States.TITLE
+                pygame.time.delay(250)
 
         case States.SELECTION:
             random_button.draw(frame, (128, 48))

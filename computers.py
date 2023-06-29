@@ -98,17 +98,17 @@ class Tree:
     def __init__(self, board):
         """Initializes a tree."""
         self.root = self.Node(board.copy())
-        self.build_tree(self.root)
+        self.build_tree(self.root, 0)
 
-    def build_tree(self, node):
+    def build_tree(self, node, depth):
         """Recursively builds a tree with every possible game outcome based on first move."""
         # Check base case, set utilities
         if node.board.check_win() is Moves.PLAYER:
-            node.utility = -10
+            node.utility = (-1 * (9 - depth))
         elif node.board.check_win() is Moves.COMPUTER:
-            node.utility = 10
+            node.utility = (1 * (9 - depth))
         elif node.board.is_board_full():
-            node.utility = -1
+            node.utility = 0
         else:
             # Find empty_tiles/possible next moves
             empty_tiles = []
@@ -132,7 +132,7 @@ class Tree:
                     child.board.player_turn = False
 
                 node.children.append(child)
-                self.build_tree(child)
+                self.build_tree(child, depth + 1)
 
     def determine_utility(self, node):
         """Determines the overall utility of a given tree, starting at the node given."""
@@ -182,6 +182,8 @@ class InsaneComputer:
         for child in self.state.children:
             utilities.append(self.tree.determine_utility(child))
         utility_index = utilities.index(max(utilities))
+
+        print(utilities)
 
         # Update state to reflect computer move.
         i = 0
