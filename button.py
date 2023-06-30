@@ -9,6 +9,7 @@ class Button:
         self.screen = screen
         self.sprite = sprite
         self.sprite_highlighted = sprite_highlighted
+        self.sfx = pygame.mixer.Sound("audio/switch2.ogg")
 
     def draw(self, frame, location):
         """Displays the current state of the button (normal/hovered)."""
@@ -21,4 +22,5 @@ class Button:
         """Returns True if the button is being clicked at that moment."""
         if self.sprite.rect.collidepoint(pygame.mouse.get_pos()):
             if pygame.mouse.get_pressed()[0]:
+                self.sfx.play()
                 return True

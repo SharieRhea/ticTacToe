@@ -17,6 +17,7 @@ class Board:
         self.location = location
         self.computer = computer
         self.player_turn = True
+        self.sfx = pygame.mixer.Sound("audio/Pop Cat SFX.wav")
 
         tile_size = 64
         self.positions = [(location[0], location[1]), (location[0] + tile_size, location[1]),
@@ -74,7 +75,7 @@ class Board:
             moves = set()
             for tile in possibility:
                 moves.add(tile.get_move())
-            if len(moves) == 1 and not moves.__contains__(Moves.NONE):
+            if len(moves) == 1:
                 for move in moves:
                     return move
         return Moves.NONE
@@ -92,6 +93,7 @@ class Board:
                 if box.check_clicked():
                     if box.get_move() is Moves.NONE:
                         box.add_player_move()
+                        self.sfx.play()
                         self.player_turn = False
         elif not self.player_turn and not self.is_board_full():
             self.computer_turn()

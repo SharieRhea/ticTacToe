@@ -15,6 +15,14 @@ screen = pygame.display.set_mode((512, 512))
 BG = (50, 50, 50)
 alpha = (0, 0, 0)
 
+# initialize background audio
+pygame.mixer.music.load("audio/ready_to_play.mp3")
+pygame.mixer.music.play(-1)
+win_sfx = pygame.mixer.Sound("audio/win.wav")
+loss_sfx = pygame.mixer.Sound("audio/loss.wav")
+draw_sfx = pygame.mixer.Sound("audio/draw.mp3")
+
+
 # initialize graphics
 background = pygame.image.load("sprites/background.png")
 title = SpriteSheet("sprites/ticTacToe.png", 7, 96, 48, 4, alpha)
@@ -26,6 +34,9 @@ play_button = Button(screen, play_regular, play_highlighted)
 quit_regular = SpriteSheet("sprites/quit.png", 1, 48, 32, 4, alpha)
 quit_highlighted = SpriteSheet("sprites/quitHighlighted.png", 2, 48, 32, 4, alpha)
 quit_button = Button(screen, quit_regular, quit_highlighted)
+back_regular = SpriteSheet("sprites/back.png", 1, 48, 32, 4, alpha)
+back_highlighted = SpriteSheet("sprites/backHighlighted.png", 2, 48, 32, 4, alpha)
+back_button = Button(screen, back_regular, back_highlighted)
 instructions_regular = SpriteSheet("sprites/instructions.png", 1, 96, 32, 4, alpha)
 instructions_highlighted = SpriteSheet("sprites/instructionsHighlighted.png", 2, 96, 32, 4, alpha)
 instructions_button = Button(screen, instructions_regular, instructions_highlighted)
@@ -44,19 +55,19 @@ secret_button = Button(screen, secret_regular, secret_highlighted)
 
 my_font = pygame.font.SysFont("Minecraftia", 18)
 instructions_text = [my_font.render("How to Play:", False, (255, 255, 255)),
-                     my_font.render("   You will plays as 'X' and the computer", False, (255, 255, 255)),
+                     my_font.render("   You will play as 'X' and the computer", False, (255, 255, 255)),
                      my_font.render("   will play as 'O'.", False, (255, 255, 255)),
                      my_font.render("   Starting with you, each player will take", False, (255, 255, 255)),
                      my_font.render("   turns placing their symbol in a square.", False, (255, 255, 255)),
                      my_font.render("   A player wins when they have three of", False, (255, 255, 255)),
-                     my_font.render("   their own symbols in a row.", False, (255, 255, 255)),
+                     my_font.render("   their own symbol in a row.", False, (255, 255, 255)),
                      my_font.render("", False, (0, 0, 0)),
                      my_font.render("Types of Computers:", False, (255, 255, 255)),
-                     my_font.render("   Random: Will play a random move every turn.", False, (255, 255, 255)),
-                     my_font.render("   Human: Will play a move to win or block ", False, (255, 255, 255)),
+                     my_font.render("   Random: Plays a random move every turn.", False, (255, 255, 255)),
+                     my_font.render("   Human: Plays a move to win or block ", False, (255, 255, 255)),
                      my_font.render("   you from winning. If this isn't an ", False, (255, 255, 255)),
                      my_font.render("   option, plays a random move.", False, (255, 255, 255)),
-                     my_font.render("   Insane: Will play the move that ", False, (255, 255, 255)),
+                     my_font.render("   Insane: Plays the move that ", False, (255, 255, 255)),
                      my_font.render("   statistically leads to the most wins.", False, (255, 255, 255))]
 
 # initialize win/loss screens
@@ -93,11 +104,21 @@ def quit_button_clicked():
         raise SystemExit
 
 
+def back_button_clicked():
+    """Returns to the Title screen."""
+    if back_button.check_clicked():
+        global state
+        state = States.TITLE
+        pygame.time.delay(250)
+
+
 def instructions_button_clicked():
     """Changes the state to reflect displaying the instructions screen."""
     if instructions_button.check_clicked():
         global state
         state = States.INSTRUCTIONS
+        # Delay prevents multiple clicks from registering
+        pygame.time.delay(250)
 
 
 while True:
@@ -121,11 +142,9 @@ while True:
                 screen.blit(text, (10, height))
                 height += 25
             play_button.draw(frame, (48, 390))
-            quit_button.draw(frame, (272, 390))
+            back_button.draw(frame, (272, 390))
             play_button_clicked()
-            if quit_button.check_clicked():
-                state = States.TITLE
-                pygame.time.delay(250)
+            back_button_clicked()
 
         case States.SELECTION:
             random_button.draw(frame, (128, 48))
@@ -157,18 +176,22 @@ while True:
                 tie.play_animation(screen, frame, (66, 12))
 
             play_button.draw(frame, (48, 372))
-            quit_button.draw(frame, (272, 372))
+            back_button.draw(frame, (272, 372))
             play_button_clicked()
-            quit_button_clicked()
+            back_button_clicked()
 
         case States.GAME:
             game_board.draw_board(screen, frame)
-            quit_button.draw(frame, (272, 372))
+            back_button.draw(frame, (272, 372))
             timer.display_timer(screen)
-            if quit_button.check_clicked():
-                state = States.TITLE
-                pygame.time.delay(250)
+            back_button_clicked()
             if game_board.check_win() is not Moves.NONE or game_board.is_board_full():
+                if game_board.check_win() is Moves.PLAYER:
+                    win_sfx.play()
+                elif game_board.check_win() is Moves.COMPUTER:
+                    loss_sfx.play()
+                elif game_board.is_board_full():
+                    draw_sfx.play()
                 state = States.GAME_OVER
 
     # Allows user to close program using the "X" button in the windows
