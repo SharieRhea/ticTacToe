@@ -17,7 +17,7 @@ class Board:
         self.location = location
         self.computer = computer
         self.player_turn = True
-        self.sfx = pygame.mixer.Sound("audio/Pop Cat SFX.wav")
+        self.sfx = pygame.mixer.Sound("audio/Pop-Cat-SFX.ogg")
 
         tile_size = 64
         self.positions = [(location[0], location[1]), (location[0] + tile_size, location[1]),

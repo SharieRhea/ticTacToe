@@ -16,11 +16,11 @@ BG = (50, 50, 50)
 alpha = (0, 0, 0)
 
 # initialize background audio
-pygame.mixer.music.load("audio/ready_to_play.mp3")
+pygame.mixer.music.load("audio/ready_to_play.ogg")
 pygame.mixer.music.play(-1)
-win_sfx = pygame.mixer.Sound("audio/win.wav")
-loss_sfx = pygame.mixer.Sound("audio/loss.wav")
-draw_sfx = pygame.mixer.Sound("audio/draw.mp3")
+win_sfx = pygame.mixer.Sound("audio/win.ogg")
+loss_sfx = pygame.mixer.Sound("audio/loss.ogg")
+draw_sfx = pygame.mixer.Sound("audio/draw.ogg")
 
 
 # initialize graphics
