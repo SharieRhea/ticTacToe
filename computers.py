@@ -183,8 +183,6 @@ class InsaneComputer:
             utilities.append(self.tree.determine_utility(child))
         utility_index = utilities.index(max(utilities))
 
-        print(utilities)
-
         # Update state to reflect computer move.
         i = 0
         for child in self.state.children:
