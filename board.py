@@ -1,9 +1,22 @@
 import pygame
-import copy
 
 from moves import Moves
 from tempboard import TempBoard
 from tile import Tile
+
+import os
+import sys
+
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 
 class Board:
@@ -11,13 +24,13 @@ class Board:
 
     def __init__(self, location, computer):
         """Initializes an empty board object."""
-        self.board = pygame.image.load("sprites/board.png").convert_alpha()
+        self.board = pygame.image.load(resource_path("sprites/board.png")).convert_alpha()
         self.board.set_colorkey((0, 0, 0))
         self.board = pygame.transform.scale(self.board, (192, 192))
         self.location = location
         self.computer = computer
         self.player_turn = True
-        self.sfx = pygame.mixer.Sound("audio/Pop-Cat-SFX.ogg")
+        self.sfx = pygame.mixer.Sound(resource_path("audio/Pop-Cat-SFX.ogg"))
 
         tile_size = 64
         self.positions = [(location[0], location[1]), (location[0] + tile_size, location[1]),

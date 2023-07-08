@@ -1,4 +1,18 @@
+import os
+import sys
+
 import pygame
+
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 
 class Button:
@@ -9,7 +23,7 @@ class Button:
         self.screen = screen
         self.sprite = sprite
         self.sprite_highlighted = sprite_highlighted
-        self.sfx = pygame.mixer.Sound("audio/switch2.ogg")
+        self.sfx = pygame.mixer.Sound(resource_path("audio/switch2.ogg"))
 
     def draw(self, frame, location):
         """Displays the current state of the button (normal/hovered)."""

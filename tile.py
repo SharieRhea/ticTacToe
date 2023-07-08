@@ -4,6 +4,20 @@ from moves import Moves
 from spritesheet import SpriteSheet
 from tempboard import TempTile
 
+import os
+import sys
+
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
 
 class Tile:
     """Models an individual tile on the board."""
@@ -17,12 +31,12 @@ class Tile:
         # Rect used for mouse collision
         self.rect = pygame.Rect((x_pos, y_pos), (width, width))
 
-        self.x = SpriteSheet("sprites/X.png", 2, 16, 16, 4, (0, 0, 0))
-        self.o = SpriteSheet("sprites/O.png", 2, 16, 16, 4, (0, 0, 0))
+        self.x = SpriteSheet(resource_path("sprites/X.png"), 2, 16, 16, 4, (0, 0, 0))
+        self.o = SpriteSheet(resource_path("sprites/O.png"), 2, 16, 16, 4, (0, 0, 0))
         self.move = Moves.NONE
 
         # Loads highlight sprite for the tile
-        highlight = pygame.image.load("sprites/highlightedTile.png").convert_alpha()
+        highlight = pygame.image.load(resource_path("sprites/highlightedTile.png")).convert_alpha()
         highlight.set_colorkey((0, 0, 0))
         self.highlight = pygame.transform.scale(highlight, (width, width))
 

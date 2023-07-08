@@ -1,3 +1,6 @@
+import os
+import sys
+
 import pygame
 
 from states import States
@@ -15,42 +18,53 @@ screen = pygame.display.set_mode((512, 512))
 BG = (50, 50, 50)
 alpha = (0, 0, 0)
 
-# initialize background audio
-pygame.mixer.music.load("audio/ready_to_play.ogg")
-pygame.mixer.music.play(-1)
-win_sfx = pygame.mixer.Sound("audio/win.ogg")
-loss_sfx = pygame.mixer.Sound("audio/loss.ogg")
-draw_sfx = pygame.mixer.Sound("audio/draw.ogg")
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
+# initialize background audio
+pygame.mixer.music.load(resource_path("audio/ready_to_play.ogg"))
+pygame.mixer.music.play(-1)
+win_sfx = pygame.mixer.Sound(resource_path("audio/win.ogg"))
+loss_sfx = pygame.mixer.Sound(resource_path("audio/loss.ogg"))
+draw_sfx = pygame.mixer.Sound(resource_path("audio/draw.ogg"))
 
 # initialize graphics
-background = pygame.image.load("sprites/background.png")
-title = SpriteSheet("sprites/ticTacToe.png", 7, 96, 48, 4, alpha)
+background = pygame.image.load(resource_path("sprites/background.png"))
+title = SpriteSheet(resource_path("sprites/ticTacToe.png"), 7, 96, 48, 4, alpha)
 
 # initialize buttons
-play_regular = SpriteSheet("sprites/play.png", 1, 48, 32, 4, alpha)
-play_highlighted = SpriteSheet("sprites/playHighlighted.png", 2, 48, 32, 4, alpha)
+play_regular = SpriteSheet(resource_path("sprites/play.png"), 1, 48, 32, 4, alpha)
+play_highlighted = SpriteSheet(resource_path("sprites/playHighlighted.png"), 2, 48, 32, 4, alpha)
 play_button = Button(screen, play_regular, play_highlighted)
-quit_regular = SpriteSheet("sprites/quit.png", 1, 48, 32, 4, alpha)
-quit_highlighted = SpriteSheet("sprites/quitHighlighted.png", 2, 48, 32, 4, alpha)
+quit_regular = SpriteSheet(resource_path("sprites/quit.png"), 1, 48, 32, 4, alpha)
+quit_highlighted = SpriteSheet(resource_path("sprites/quitHighlighted.png"), 2, 48, 32, 4, alpha)
 quit_button = Button(screen, quit_regular, quit_highlighted)
-back_regular = SpriteSheet("sprites/back.png", 1, 48, 32, 4, alpha)
-back_highlighted = SpriteSheet("sprites/backHighlighted.png", 2, 48, 32, 4, alpha)
+back_regular = SpriteSheet(resource_path("sprites/back.png"), 1, 48, 32, 4, alpha)
+back_highlighted = SpriteSheet(resource_path("sprites/backHighlighted.png"), 2, 48, 32, 4, alpha)
 back_button = Button(screen, back_regular, back_highlighted)
-instructions_regular = SpriteSheet("sprites/instructions.png", 1, 96, 32, 4, alpha)
-instructions_highlighted = SpriteSheet("sprites/instructionsHighlighted.png", 2, 96, 32, 4, alpha)
+instructions_regular = SpriteSheet(resource_path("sprites/instructions.png"), 1, 96, 32, 4, alpha)
+instructions_highlighted = SpriteSheet(resource_path("sprites/instructionsHighlighted.png"), 2, 96, 32, 4, alpha)
 instructions_button = Button(screen, instructions_regular, instructions_highlighted)
-random_regular = SpriteSheet("sprites/random.png", 1, 64, 32, 4, alpha)
-random_highlighted = SpriteSheet("sprites/randomHighlighted.png", 2, 64, 32, 4, alpha)
+random_regular = SpriteSheet(resource_path("sprites/random.png"), 1, 64, 32, 4, alpha)
+random_highlighted = SpriteSheet(resource_path("sprites/randomHighlighted.png"), 2, 64, 32, 4, alpha)
 random_button = Button(screen, random_regular, random_highlighted)
-human_regular = SpriteSheet("sprites/human.png", 1, 64, 32, 4, alpha)
-human_highlighted = SpriteSheet("sprites/humanHighlighted.png", 2, 64, 32, 4, alpha)
+human_regular = SpriteSheet(resource_path("sprites/human.png"), 1, 64, 32, 4, alpha)
+human_highlighted = SpriteSheet(resource_path("sprites/humanHighlighted.png"), 2, 64, 32, 4, alpha)
 human_button = Button(screen, human_regular, human_highlighted)
-insane_regular = SpriteSheet("sprites/insane.png", 1, 64, 32, 4, alpha)
-insane_highlighted = SpriteSheet("sprites/insaneHighlighted.png", 2, 64, 32, 4, alpha)
+insane_regular = SpriteSheet(resource_path("sprites/insane.png"), 1, 64, 32, 4, alpha)
+insane_highlighted = SpriteSheet(resource_path("sprites/insaneHighlighted.png"), 2, 64, 32, 4, alpha)
 insane_button = Button(screen, insane_regular, insane_highlighted)
-secret_regular = SpriteSheet("sprites/secret.png", 1, 48, 32, 4, alpha)
-secret_highlighted = SpriteSheet("sprites/secretHighlighted.png", 2, 48, 32, 4, alpha)
+secret_regular = SpriteSheet(resource_path("sprites/secret.png"), 1, 48, 32, 4, alpha)
+secret_highlighted = SpriteSheet(resource_path("sprites/secretHighlighted.png"), 2, 48, 32, 4, alpha)
 secret_button = Button(screen, secret_regular, secret_highlighted)
 
 my_font = pygame.font.SysFont("Minecraftia", 18)
@@ -71,12 +85,12 @@ instructions_text = [my_font.render("How to Play:", False, (255, 255, 255)),
                      my_font.render("   statistically leads to the most wins.", False, (255, 255, 255))]
 
 # initialize win/loss screens
-win = SpriteSheet("sprites/win.png", 2, 96, 48, 4, (0, 0, 0))
-tie = SpriteSheet("sprites/draw.png", 2, 96, 48, 4, (0, 0, 0))
-lose = SpriteSheet("sprites/loss.png", 2, 96, 48, 4, (0, 0, 0))
+win = SpriteSheet(resource_path("sprites/win.png"), 2, 96, 48, 4, (0, 0, 0))
+tie = SpriteSheet(resource_path("sprites/draw.png"), 2, 96, 48, 4, (0, 0, 0))
+lose = SpriteSheet(resource_path("sprites/loss.png"), 2, 96, 48, 4, (0, 0, 0))
 
 state = States.TITLE
-timer = Timer("sprites/numbers.png")
+timer = Timer(resource_path("sprites/numbers.png"))
 
 
 def play_button_clicked():
@@ -92,7 +106,7 @@ def selection_clicked():
     global state
     state = States.GAME
     global timer
-    timer = Timer("sprites/numbers.png")
+    timer = Timer(resource_path("sprites/numbers.png"))
     # Delay prevents multiple clicks from registering
     pygame.time.delay(250)
 
